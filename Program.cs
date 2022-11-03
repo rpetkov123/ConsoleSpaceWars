@@ -40,7 +40,7 @@ internal class Program {
         //entities
         entities = new List<Entity>();
         entities.Add(new Player(5, 2, 10));
-        entities.Add(new Enemy(100, 10, 10));
+        entities.Add(new Enemy(70, 10, 10));
     }
 
     private static void CheckKeyboardInput() {
