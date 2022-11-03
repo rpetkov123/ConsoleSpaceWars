@@ -15,13 +15,6 @@ namespace Academy.ConsoleSpaceWars {
                 @" /_OO_\ ",
                 @"() () ()"
             };
-
-            blank = new string[] {
-                @"        ",
-                @"        ",
-                @"        "
-            };
-
             fractionalX = X;
         }
 
