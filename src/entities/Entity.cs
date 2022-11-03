@@ -2,7 +2,7 @@ using System;
 
 namespace Academy.ConsoleSpaceWars {
 
-    public abstract class Entity : UpdatableAndRenderableGameObject/* , IDamagable */ {
+    public abstract class Entity : UpdatableAndRenderableGameObject {
 
         protected string[] picture;
         protected string[] blank;
@@ -43,9 +43,5 @@ namespace Academy.ConsoleSpaceWars {
                 Console.Write(blank[i]);
             }
         }
-
-        /* public void applyDamage(int dmg) {
-            Health -= dmg;
-        } */
     }
 }

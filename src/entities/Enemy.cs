@@ -33,12 +33,5 @@ namespace Academy.ConsoleSpaceWars {
 
             X = (int)Math.Max(fractionalX, 0);
         }
-
-        /* public override void Render() {
-            for (int i = 0; i < picture.Length; i++) {
-                Console.SetCursorPosition(X, Y + i);
-                Console.Write(picture[i]);
-            }
-        } */
     }
 }
