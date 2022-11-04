@@ -2,9 +2,10 @@ using System;
 
 namespace Academy.ConsoleSpaceWars {
 
-    public abstract class Entity : UpdatableAndRenderableGameObject {
+    public abstract class Entity : UpdatableAndRenderableGameObject/* , IDamagable */ {
 
         protected string[] picture;
+        protected string[] blank;
 
         protected int previousX;
         protected int previousY;
@@ -21,6 +22,8 @@ namespace Academy.ConsoleSpaceWars {
         }
 
         public override void Render() {
+            Clear();
+
             //anchor at 0:0
             for (int i = 0; i < picture.Length; i++) {
                 Console.SetCursorPosition(X, Y + i);
@@ -33,5 +36,16 @@ namespace Academy.ConsoleSpaceWars {
             //     Console.Write(picture[i]);
             // }
         }
+
+        private void Clear() {
+            for (int i = 0; i < blank.Length; i++) {
+                Console.SetCursorPosition(previousX, previousY + i);
+                Console.Write(blank[i]);
+            }
+        }
+
+        /* public void applyDamage(int dmg) {
+            Health -= dmg;
+        } */
     }
 }

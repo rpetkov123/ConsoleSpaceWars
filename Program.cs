@@ -7,7 +7,8 @@ internal class Program {
 
     private static bool isRunning = true;
 
-    private static List<Entity> entities;
+    private static Player player;
+    private static List<UpdatableAndRenderableGameObject> updatableAndRenderable;
 
     private static void Main(string[] args) {
 
@@ -37,30 +38,49 @@ internal class Program {
         Console.CursorVisible = false;
         Console.Clear();
 
-        //entities
-        entities = new List<Entity>();
-        entities.Add(new Player(5, 2, 10));
-        entities.Add(new Enemy(70, 10, 10));
+        //updatableAndRenderable
+        updatableAndRenderable = new List<UpdatableAndRenderableGameObject>();
+
+        player = new Player(5, 2, 10);
+        updatableAndRenderable.Add(player);
+        updatableAndRenderable.Add(new EnemySpawner());
     }
 
-    private static void CheckKeyboardInput() {
+    private static void CheckKeyboardInput() {      //TODO: some kind of service maybe
         if (Console.KeyAvailable) {
-            switch (Console.ReadKey(true).Key) {
+            ConsoleKey pressedKey = Console.ReadKey(true).Key;
+
+            switch (pressedKey) {
                 case ConsoleKey.Escape:
+                    player.OnInputReceived(null);
                     isRunning = false;
-                    return;
+                    break;
+
+                case ConsoleKey.UpArrow:
+                case ConsoleKey.W:
+                case ConsoleKey.DownArrow:
+                case ConsoleKey.S:
+                case ConsoleKey.RightArrow:
+                case ConsoleKey.D:
+                case ConsoleKey.LeftArrow:
+                case ConsoleKey.A:
+                case ConsoleKey.Spacebar:
+                    player.OnInputReceived(pressedKey);
+                    break;
             }
+        } else {
+            player.OnInputReceived(null);
         }
     }
 
     private static void Update() {
-        foreach (Entity e in entities) {
+        foreach (UpdatableAndRenderableGameObject e in updatableAndRenderable) {
             e.Update();
         }
     }
 
     private static void Render() {
-        foreach (Entity e in entities) {
+        foreach (UpdatableAndRenderableGameObject e in updatableAndRenderable) {
             e.Render();
         }
     }
