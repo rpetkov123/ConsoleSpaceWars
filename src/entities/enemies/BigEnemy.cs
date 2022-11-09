@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 
 namespace Academy.ConsoleSpaceWars {
 
@@ -11,8 +10,8 @@ namespace Academy.ConsoleSpaceWars {
 
         private double fractionalX;
 
-        private TimeSpan shootDelay = TimeSpan.FromMilliseconds(1000);
-        private Stopwatch shootStopwatch = new Stopwatch();
+        private int shootDelayInFrames = 0;
+        private int shootDelayTarget = 60;
 
         public BigEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, INITIAL_SPEED, HEALTH, SCORE) {
             picture = new string[] {
@@ -29,7 +28,7 @@ namespace Academy.ConsoleSpaceWars {
 
             fractionalX = X;
 
-            shootStopwatch.Start();
+            // shootStopwatch.Start();
         }
 
         public override void Update() {
@@ -40,10 +39,10 @@ namespace Academy.ConsoleSpaceWars {
 
             X = (int)Math.Max(fractionalX, 0);
 
-            if (shootStopwatch.Elapsed > shootDelay) {
+            shootDelayInFrames++;
+            if (shootDelayInFrames >= shootDelayTarget) {
                 Fire(X, Y + 1, BulletType.ARROW, DirectionType.LEFT);
-
-                shootStopwatch.Restart();
+                shootDelayInFrames = 0;
             }
 
             base.Update();
