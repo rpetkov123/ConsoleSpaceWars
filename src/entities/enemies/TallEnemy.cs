@@ -8,7 +8,7 @@ namespace Academy.ConsoleSpaceWars {
         private const int SCORE = 10;
         private const int HEALTH = 10;
 
-        public TallEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, HEALTH, INITIAL_SPEED, SCORE) {
+        public TallEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, INITIAL_SPEED, HEALTH, SCORE) {
             picture = new string[] {
                 @"      !      ",
                 @"     /!\     ",

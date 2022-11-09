@@ -2,26 +2,21 @@ using System;
 
 namespace Academy.ConsoleSpaceWars {
 
-    public class Player : Entity {
+    public class Player : Actor {
 
-        private const int MAX_DISTANCE_X = 90;
+        private const int MAX_DISTANCE_X = 50;
         private const float INITIAL_SPEED = 1;
 
         private double fractionalX;
 
         private ConsoleKey? currentlyPressedKey;
 
-        public Player(int xCoord, int yCoord, int health) : base(xCoord, yCoord, health, INITIAL_SPEED) {
+        public Player(int xCoord, int yCoord, int health) : base(xCoord, yCoord, INITIAL_SPEED, health) {
 
             picture = new string[] {
                 @"=| \\  ",
                 @"  |   >",
                 @"=| //  "
-                // @"-----------",
-                // @"-----------",
-                // @"-----------",
-                // @"-----------",
-                // @"-----------",
             };
 
             blank = new string[] {
@@ -39,6 +34,12 @@ namespace Academy.ConsoleSpaceWars {
 
         public override void Update() {
             HandleInput();
+
+            base.Update();
+        }
+
+        public override void Render() {
+            base.Render();
         }
 
         private void HandleInput() {
@@ -46,36 +47,35 @@ namespace Academy.ConsoleSpaceWars {
                 return;
             }
 
-            // if (Console.KeyAvailable) {
-                previousX = X;
-                previousY = Y;
+            previousX = X;
+            previousY = Y;
 
-                switch (currentlyPressedKey) {
-                    case ConsoleKey.UpArrow:
-                    case ConsoleKey.W:
-                        Y = (int)Math.Max(Y - speed, 0);
-                        break;
+            switch (currentlyPressedKey) {
+                case ConsoleKey.UpArrow:
+                case ConsoleKey.W:
+                    Y = (int)Math.Max(Y - speed, 0);
+                    break;
 
-                    case ConsoleKey.DownArrow:
-                    case ConsoleKey.S:
-                        Y = (int)Math.Min(Y + speed, Console.WindowHeight - picture.Length);
-                        break;
+                case ConsoleKey.DownArrow:
+                case ConsoleKey.S:
+                    Y = (int)Math.Min(Y + speed, Console.WindowHeight - picture.Length);
+                    break;
 
-                    case ConsoleKey.RightArrow:
-                    case ConsoleKey.D:
-                        X = (int)Math.Min(X + speed, MAX_DISTANCE_X);
-                        break;
+                case ConsoleKey.RightArrow:
+                case ConsoleKey.D:
+                    X = (int)Math.Min(X + speed, MAX_DISTANCE_X);
+                    break;
 
-                    case ConsoleKey.LeftArrow:
-                    case ConsoleKey.A:
-                        X = (int)Math.Max(X - speed, 0);
-                        break;
+                case ConsoleKey.LeftArrow:
+                case ConsoleKey.A:
+                    X = (int)Math.Max(X - speed, 0);
+                    break;
 
-                    case ConsoleKey.Spacebar:
-                        //TODO: implement me!
-                        break;
-                }
-            // }
+                case ConsoleKey.Spacebar:
+                    BulletType bulletType = (BulletType)new Random().Next(0, 2);
+                    Fire(X + picture[0].Length - 1, Y + picture.Length / 2, bulletType, DirectionType.RIGHT);
+                    break;
+            }
         }
     }
 }

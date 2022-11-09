@@ -8,6 +8,7 @@ internal class Program {
     private static bool isRunning = true;
 
     private static Player player;
+    private static EnemySpawner spawner;
     private static List<UpdatableAndRenderableGameObject> updatableAndRenderable;
 
     private static void Main(string[] args) {
@@ -16,6 +17,8 @@ internal class Program {
 
         while (isRunning) {
             CheckKeyboardInput();
+
+            CheckCollisions();
 
             Update();
 
@@ -43,7 +46,9 @@ internal class Program {
 
         player = new Player(5, 2, 10);
         updatableAndRenderable.Add(player);
-        updatableAndRenderable.Add(new EnemySpawner());
+
+        spawner = new EnemySpawner();
+        updatableAndRenderable.Add(spawner);
     }
 
     private static void CheckKeyboardInput() {      //TODO: some kind of service maybe
@@ -70,6 +75,33 @@ internal class Program {
             }
         } else {
             player.OnInputReceived(null);
+        }
+    }
+
+    private static void CheckCollisions() {
+        CheckPlayerBulletsCollision();
+        CheckEnemyPlayerCollision();
+        CheckEnemyBulletsPlayerCollision();
+    }
+
+    private static void CheckPlayerBulletsCollision() {
+        List<Bullet> bullets = player.Bullets;
+        for (int i = 0; i < bullets.Count; i++) {
+            if (spawner.IsPlayerBulletCollidingWithEnemy(bullets[i])) {
+                //TODO: update player
+            }
+        }
+    }
+
+    private static void CheckEnemyPlayerCollision() {
+        if (spawner.IsPlayerCollidingWithEnemy(player)) {
+            //TODO: update player
+        }
+    }
+
+    private static void CheckEnemyBulletsPlayerCollision() {
+        if (spawner.IsEnemyBulletsCollidingWithPlayer(player)) {
+            //TODO: update player
         }
     }
 
