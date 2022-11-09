@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Academy.ConsoleSpaceWars {
 
@@ -10,7 +11,10 @@ namespace Academy.ConsoleSpaceWars {
 
         private double fractionalX;
 
-        public BigEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, HEALTH, INITIAL_SPEED, SCORE) {
+        private TimeSpan shootDelay = TimeSpan.FromMilliseconds(1000);
+        private Stopwatch shootStopwatch = new Stopwatch();
+
+        public BigEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, INITIAL_SPEED, HEALTH, SCORE) {
             picture = new string[] {
                 @"  _/\_  ",
                 @" /_OO_\ ",
@@ -24,6 +28,8 @@ namespace Academy.ConsoleSpaceWars {
             };
 
             fractionalX = X;
+
+            shootStopwatch.Start();
         }
 
         public override void Update() {
@@ -33,6 +39,14 @@ namespace Academy.ConsoleSpaceWars {
             fractionalX -= speed;
 
             X = (int)Math.Max(fractionalX, 0);
+
+            if (shootStopwatch.Elapsed > shootDelay) {
+                Fire(X, Y + 1, BulletType.ARROW, DirectionType.LEFT);
+
+                shootStopwatch.Restart();
+            }
+
+            base.Update();
         }
     }
 }

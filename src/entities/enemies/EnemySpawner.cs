@@ -8,15 +8,15 @@ namespace Academy.ConsoleSpaceWars {
 
         private readonly int SPAWN_X = Console.WindowWidth - 20;
 
-        private List<Enemy> enemies;
+        public List<Enemy> Enemies { get; private set; }
 
         private Random rnd = new Random();
 
         //INFO: we are using a premade system, might have to implement it ourselfs
-        private readonly TimeSpan bigEnemyInterval = TimeSpan.FromMilliseconds(4000);
-        private readonly TimeSpan flatEnemyInterval = TimeSpan.FromMilliseconds(3000);
-        private readonly TimeSpan roundEnemyInterval = TimeSpan.FromMilliseconds(2200);
-        private readonly TimeSpan squareEnemyInterval = TimeSpan.FromMilliseconds(2500);
+        private readonly TimeSpan bigEnemyInterval = TimeSpan.FromMilliseconds(6000);
+        private readonly TimeSpan flatEnemyInterval = TimeSpan.FromMilliseconds(7000);
+        private readonly TimeSpan roundEnemyInterval = TimeSpan.FromMilliseconds(8200);
+        private readonly TimeSpan squareEnemyInterval = TimeSpan.FromMilliseconds(12500);
         private readonly TimeSpan tallEnemyInterval = TimeSpan.FromMilliseconds(7000);
 
         private Stopwatch bigEnemyStopwatch = new Stopwatch();
@@ -27,27 +27,73 @@ namespace Academy.ConsoleSpaceWars {
 
         //INFO: could be based on its position
         public EnemySpawner(/* int xCoord, int yCoord */) : base(0, 0) {
-            enemies = new List<Enemy>();
+            Enemies = new List<Enemy>();
 
             bigEnemyStopwatch.Start();
             flatEnemyStopwatch.Start();
-            roundEnemyStopwatch.Start();
-            squareEnemyStopwatch.Start();
-            tallEnemyStopwatch.Start();
+            // roundEnemyStopwatch.Start();
+            // squareEnemyStopwatch.Start();
+            // tallEnemyStopwatch.Start();
         }
 
         public override void Update() {
             SpawnEnemies();
 
-            foreach (Enemy e in enemies) {
+            foreach (Enemy e in Enemies) {
                 e.Update();
             }
         }
 
         public override void Render() {
-            foreach (Enemy e in enemies) {
+            foreach (Enemy e in Enemies) {
                 e.Render();
             }
+        }
+
+        public bool IsPlayerBulletCollidingWithEnemy(Bullet b) {
+            bool result = false;
+
+            for (int i = 0; i < Enemies.Count; i++) {
+                if (Enemies[i].IsCollidingAt(b.ToRect())) {
+                    DestroyEnemy(i);
+
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public bool IsPlayerCollidingWithEnemy(Player pl) {
+            bool result = false;
+            for (int i = 0; i < Enemies.Count; i++) {
+                if (pl.IsCollidingAt(Enemies[i].ToRect())) {
+                    DestroyEnemy(i);
+
+                    result = true;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public bool IsEnemyBulletsCollidingWithPlayer(Player player) {
+            bool result = false;
+
+            foreach (Enemy e in Enemies) {
+                for (int i = 0; i < e.Bullets.Count; i++) {
+                    if (player.IsCollidingAt(e.Bullets[i].ToRect())) {
+                        e.Bullets[i].Destroy();
+
+                        e.Bullets.RemoveAt(i);
+
+                        i--;
+                    }
+                }
+            }
+
+            return result;
         }
 
         private void SpawnEnemies() {
@@ -100,7 +146,14 @@ namespace Academy.ConsoleSpaceWars {
                 return;
             }
 
-            enemies.Add(e);
+            Enemies.Add(e);
+        }
+
+        private void DestroyEnemy(int enemyIndex) {
+            Enemies[enemyIndex].Destroy();
+            Enemies[enemyIndex] = null;
+
+            Enemies.RemoveAt(enemyIndex);
         }
     }
 }
