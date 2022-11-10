@@ -2,10 +2,10 @@ namespace Academy.ConsoleSpaceWars {
 
     public abstract class Enemy : Actor {
 
-        protected readonly int score;
+        public int Score { get; protected set; }
 
         public Enemy(int xCoord, int yCoord, float speed, int health, int score) : base(xCoord, yCoord, speed, health) {
-            this.score = score;
+            Score = score;
         }
     }
 }

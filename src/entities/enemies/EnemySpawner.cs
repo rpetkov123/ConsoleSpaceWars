@@ -4,7 +4,15 @@ using System.Diagnostics;
 
 namespace Academy.ConsoleSpaceWars {
 
+    public class EnemyDestroyedData {
+        public int x;
+        public int y;
+        public int score;
+    }
+
     public class EnemySpawner : UpdatableAndRenderableGameObject {
+
+        public Action<EnemyDestroyedData> OnEnemyDestroyed;
 
         private readonly int SPAWN_X = Console.WindowWidth - 20;
 
@@ -165,6 +173,13 @@ namespace Academy.ConsoleSpaceWars {
         }
 
         private void DestroyEnemy(int enemyIndex) {
+            EnemyDestroyedData data = new EnemyDestroyedData() {
+                x = Enemies[enemyIndex].X,
+                y = Enemies[enemyIndex].Y,
+                score = Enemies[enemyIndex].Score
+            };
+            OnEnemyDestroyed?.Invoke(data);
+
             Enemies[enemyIndex].Destroy();
             Enemies[enemyIndex] = null;
 

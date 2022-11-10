@@ -6,11 +6,13 @@ using Academy.ConsoleSpaceWars;
 internal class Program {
 
     private static bool isRunning = true;
+    private static int score = 0;
 
     private static Player player;
     private static EnemySpawner spawner;
 
     private static HealthBar healthbar;
+    private static Score scoreGraphic;
 
     private static List<UpdatableAndRenderableGameObject> updatableAndRenderable;
 
@@ -53,7 +55,10 @@ internal class Program {
 
         // UI
         healthbar = new HealthBar(0, 1, player.CurrentHealth, player.MaxHealth);
-        player.OnHealthChanged += SetHealthbar;
+        player.OnHealthChanged += OnPlayerhealthChange;
+
+        scoreGraphic = new Score(50, 1, score);
+        spawner.OnEnemyDestroyed += OnEnemyDestroyed;
     }
 
     private static void CheckKeyboardInput() {      //TODO: some kind of service maybe
@@ -92,7 +97,6 @@ internal class Program {
     private static void CheckPlayerBulletsCollision() {
         for (int i = 0; i < player.Bullets.Count; i++) {
             if (spawner.IsPlayerBulletCollidingWithEnemy(player.Bullets[i])) {
-                //TODO: update player
                 player.Bullets[i].Destroy();
                 player.Bullets.RemoveAt(i);
 
@@ -129,10 +133,16 @@ internal class Program {
 
     private static void RenderUi() {
         healthbar.Render();
+        scoreGraphic.Render();
     }
 
-    private static void SetHealthbar(int value) {
+    private static void OnPlayerhealthChange(int value) {
         healthbar.SetHealth(value);
+    }
+
+    private static void OnEnemyDestroyed(EnemyDestroyedData data) {
+        score += data.score;
+        scoreGraphic.SetScore(score);
     }
 
     private static void DelayGameLoop() {
@@ -140,10 +150,12 @@ internal class Program {
     }
 
     private static void Destroy() {
-        player.OnHealthChanged -= SetHealthbar;
+        player.OnHealthChanged -= OnPlayerhealthChange;
+        spawner.OnEnemyDestroyed -= OnEnemyDestroyed;
 
         Console.Clear();
         Console.WriteLine("Game was closed.");
+        Console.WriteLine("Score: " + scoreGraphic.CurrentScore);
         Console.CursorVisible = true;
     }
 }
