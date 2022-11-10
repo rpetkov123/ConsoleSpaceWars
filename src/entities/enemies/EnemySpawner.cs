@@ -37,6 +37,8 @@ namespace Academy.ConsoleSpaceWars {
         }
 
         public override void Update() {
+            DestroyOutOfBounds();
+
             SpawnEnemies();
 
             foreach (Enemy e in Enemies) {
@@ -94,6 +96,16 @@ namespace Academy.ConsoleSpaceWars {
             }
 
             return result;
+        }
+
+        private void DestroyOutOfBounds() {
+            for (int i = 0; i < Enemies.Count; i++) {
+                if (Enemies[i].X <= 0) {
+                    DestroyEnemy(i);
+
+                    i--;
+                }
+            }
         }
 
         private void SpawnEnemies() {
