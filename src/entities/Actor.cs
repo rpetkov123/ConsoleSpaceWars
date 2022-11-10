@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Academy.ConsoleSpaceWars {
@@ -15,6 +16,8 @@ namespace Academy.ConsoleSpaceWars {
         }
 
         public override void Update() {
+            DestroyBulletOutOfBounds();
+
             foreach (Bullet b in Bullets) {
                 b.Update();
             }
@@ -56,12 +59,22 @@ namespace Academy.ConsoleSpaceWars {
         public override void Destroy() {
             for (int i = 0; i < Bullets.Count; i++) {
                 Bullets[i].Destroy();
-
                 Bullets.RemoveAt(i);
 
                 i--;
             }
             base.Destroy();
+        }
+
+        private void DestroyBulletOutOfBounds() {
+            for (int i = 0; i < Bullets.Count; i++) {
+                if (Bullets[i].X + Bullets[i].ToRect().w >= Console.WindowWidth || Bullets[i].X <= 0) {
+                    Bullets[i].Destroy();
+                    Bullets.RemoveAt(i);
+
+                    i--;
+                }
+            }
         }
     }
 }

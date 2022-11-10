@@ -16,22 +16,11 @@ namespace Academy.ConsoleSpaceWars {
             fractionalX = x;
         }
 
-        public void ClearOnOutOfBounds() {
-            Console.SetCursorPosition(X, Y);
-            Console.Write(blank);
-        }
-
         public override void Update() {
             previousX = X;
-            // previousY = y;
 
-            if (direction == DirectionType.RIGHT) {
-                fractionalX += speed;
-                X = (int)(Math.Min(fractionalX, Console.WindowWidth));
-            } else {
-                fractionalX -= speed;
-                X = (int)(Math.Max(fractionalX, 0));
-            }
+            fractionalX += speed * (int)direction;
+            X = (int)fractionalX;
         }
     }
 }
