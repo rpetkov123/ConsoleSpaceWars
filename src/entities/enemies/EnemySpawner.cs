@@ -59,6 +59,8 @@ namespace Academy.ConsoleSpaceWars {
                 if (Enemies[i].IsCollidingAt(b.ToRect())) {
                     DestroyEnemy(i);
 
+                    result = true;
+
                     break;
                 }
             }
@@ -87,8 +89,9 @@ namespace Academy.ConsoleSpaceWars {
                 for (int i = 0; i < e.Bullets.Count; i++) {
                     if (player.IsCollidingAt(e.Bullets[i].ToRect())) {
                         e.Bullets[i].Destroy();
-
                         e.Bullets.RemoveAt(i);
+
+                        result = true;
 
                         i--;
                     }

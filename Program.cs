@@ -85,10 +85,13 @@ internal class Program {
     }
 
     private static void CheckPlayerBulletsCollision() {
-        List<Bullet> bullets = player.Bullets;
-        for (int i = 0; i < bullets.Count; i++) {
-            if (spawner.IsPlayerBulletCollidingWithEnemy(bullets[i])) {
+        for (int i = 0; i < player.Bullets.Count; i++) {
+            if (spawner.IsPlayerBulletCollidingWithEnemy(player.Bullets[i])) {
                 //TODO: update player
+                player.Bullets[i].Destroy();
+                player.Bullets.RemoveAt(i);
+
+                i--;
             }
         }
     }
