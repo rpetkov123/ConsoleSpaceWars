@@ -13,6 +13,7 @@ internal class Program {
 
     private static HealthBar healthbar;
     private static Score scoreGraphic;
+    private static ExplosionManager explosionManager;
 
     private static List<UpdatableAndRenderableGameObject> updatableAndRenderable;
 
@@ -59,6 +60,9 @@ internal class Program {
 
         scoreGraphic = new Score(50, 1, score);
         spawner.OnEnemyDestroyed += OnEnemyDestroyed;
+
+        explosionManager = new ExplosionManager();
+        updatableAndRenderable.Add(explosionManager);
     }
 
     private static void CheckKeyboardInput() {      //TODO: some kind of service maybe
@@ -143,6 +147,8 @@ internal class Program {
     private static void OnEnemyDestroyed(EnemyDestroyedData data) {
         score += data.score;
         scoreGraphic.SetScore(score);
+
+        explosionManager.SpawnExplosionAt(data.x, data.y);
     }
 
     private static void DelayGameLoop() {
