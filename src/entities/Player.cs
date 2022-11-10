@@ -73,7 +73,7 @@ namespace Academy.ConsoleSpaceWars {
                     break;
 
                 case ConsoleKey.Spacebar:
-                    BulletType bulletType = (BulletType)new Random().Next(0, 2);
+                    BulletType bulletType = (BulletType)new Random().Next(0, Enum.GetNames(typeof(BulletType)).Length);
                     Fire(X + picture[0].Length - 1, Y + picture.Length / 2, bulletType, DirectionType.RIGHT);
                     break;
             }
