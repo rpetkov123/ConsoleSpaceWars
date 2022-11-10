@@ -6,12 +6,13 @@ namespace Academy.ConsoleSpaceWars {
 
         private const int MAX_DISTANCE_X = 50;
         private const float INITIAL_SPEED = 1;
+        private const int MAX_HEALTH = 10;
 
         private double fractionalX;
 
         private ConsoleKey? currentlyPressedKey;
 
-        public Player(int xCoord, int yCoord, int health) : base(xCoord, yCoord, INITIAL_SPEED, health) {
+        public Player(int xCoord, int yCoord) : base(xCoord, yCoord, INITIAL_SPEED, MAX_HEALTH) {
 
             picture = new string[] {
                 @"=| \\  ",

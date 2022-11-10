@@ -3,14 +3,18 @@ using System.Collections.Generic;
 
 namespace Academy.ConsoleSpaceWars {
 
-    public abstract class Actor : Entity {
+    public abstract class Actor : Entity, IDamagable {
 
-        protected int health;
+        public int CurrentHealth { get; protected set; }
+        public int MaxHealth { get; protected set; }
+
+        public Action<int> OnHealthChanged;
 
         public List<Bullet> Bullets { get; protected set; }
 
         protected Actor(int xCoord, int yCoord, float speed, int health) : base(xCoord, yCoord, speed) {
-            this.health = health;
+            CurrentHealth = health;
+            MaxHealth = health;
 
             Bullets = new List<Bullet>();
         }
@@ -75,6 +79,12 @@ namespace Academy.ConsoleSpaceWars {
                     i--;
                 }
             }
+        }
+
+        public void ApplyDamage(int dmg) {
+            CurrentHealth -= dmg;
+
+            OnHealthChanged?.Invoke(CurrentHealth);
         }
     }
 }

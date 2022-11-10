@@ -9,6 +9,9 @@ internal class Program {
 
     private static Player player;
     private static EnemySpawner spawner;
+
+    private static HealthBar healthbar;
+
     private static List<UpdatableAndRenderableGameObject> updatableAndRenderable;
 
     private static void Main(string[] args) {
@@ -27,13 +30,11 @@ internal class Program {
             DelayGameLoop();
         }
 
-        Console.Clear();
-        Console.WriteLine("Game was closed.");
-        Console.CursorVisible = true;
+        Destroy();
     }
 
     private static void Init() {
-        //console setup
+        // console setup
         if (OperatingSystem.IsWindows()) {
             Console.WindowWidth = 100;
             Console.WindowHeight = 30;
@@ -41,14 +42,18 @@ internal class Program {
         Console.CursorVisible = false;
         Console.Clear();
 
-        //updatableAndRenderable
+        // updatableAndRenderable
         updatableAndRenderable = new List<UpdatableAndRenderableGameObject>();
 
-        player = new Player(5, 2, 10);
+        player = new Player(Console.WindowHeight / 2, 5);
         updatableAndRenderable.Add(player);
 
         spawner = new EnemySpawner();
         updatableAndRenderable.Add(spawner);
+
+        // UI
+        healthbar = new HealthBar(0, 1, player.CurrentHealth, player.MaxHealth);
+        player.OnHealthChanged += SetHealthbar;
     }
 
     private static void CheckKeyboardInput() {      //TODO: some kind of service maybe
@@ -98,13 +103,13 @@ internal class Program {
 
     private static void CheckEnemyPlayerCollision() {
         if (spawner.IsPlayerCollidingWithEnemy(player)) {
-            //TODO: update player
+            player.ApplyDamage(1);
         }
     }
 
     private static void CheckEnemyBulletsPlayerCollision() {
         if (spawner.IsEnemyBulletsCollidingWithPlayer(player)) {
-            //TODO: update player
+            player.ApplyDamage(1);
         }
     }
 
@@ -118,9 +123,27 @@ internal class Program {
         foreach (UpdatableAndRenderableGameObject e in updatableAndRenderable) {
             e.Render();
         }
+
+        RenderUi();     //call this method last to render the UI on top of everything else
+    }
+
+    private static void RenderUi() {
+        healthbar.Render();
+    }
+
+    private static void SetHealthbar(int value) {
+        healthbar.SetHealth(value);
     }
 
     private static void DelayGameLoop() {
         Thread.Sleep(17);
+    }
+
+    private static void Destroy() {
+        player.OnHealthChanged -= SetHealthbar;
+
+        Console.Clear();
+        Console.WriteLine("Game was closed.");
+        Console.CursorVisible = true;
     }
 }
