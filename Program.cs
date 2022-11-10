@@ -7,6 +7,9 @@ internal class Program {
 
     private static bool isRunning = true;
     private static int score = 0;
+    private static bool playerDead = false;
+    private static int framesTillDestroy = 0;
+    private static int framesTillDestroyTarget = 80;
 
     private static Player player;
     private static EnemySpawner spawner;
@@ -84,7 +87,7 @@ internal class Program {
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
                 case ConsoleKey.Spacebar:
-                    player.OnInputReceived(pressedKey);
+                    player.OnInputReceived(playerDead ? null : pressedKey);
                     break;
             }
         } else {
@@ -93,6 +96,10 @@ internal class Program {
     }
 
     private static void CheckCollisions() {
+        if (playerDead) {
+            return;
+        }
+
         CheckPlayerBulletsCollision();
         CheckEnemyPlayerCollision();
         CheckEnemyBulletsPlayerCollision();
@@ -122,6 +129,14 @@ internal class Program {
     }
 
     private static void Update() {
+        if (playerDead) {
+            framesTillDestroy++;
+
+            if (framesTillDestroy >= framesTillDestroyTarget) {
+                isRunning = false;
+            }
+        }
+
         foreach (UpdatableAndRenderableGameObject e in updatableAndRenderable) {
             e.Update();
         }
@@ -142,6 +157,12 @@ internal class Program {
 
     private static void OnPlayerhealthChange(int value) {
         healthbar.SetHealth(value);
+
+        if (value <= 0) {
+            explosionManager.SpawnExplosionAt(player.X, player.Y);
+
+            playerDead = true;
+        }
     }
 
     private static void OnEnemyDestroyed(EnemyDestroyedData data) {
@@ -160,7 +181,7 @@ internal class Program {
         spawner.OnEnemyDestroyed -= OnEnemyDestroyed;
 
         Console.Clear();
-        Console.WriteLine("Game was closed.");
+        Console.WriteLine(playerDead ? "You are DEAD!" : "Game was closed.");
         Console.WriteLine("Score: " + scoreGraphic.CurrentScore);
         Console.CursorVisible = true;
     }
