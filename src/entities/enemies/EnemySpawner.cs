@@ -39,9 +39,9 @@ namespace Academy.ConsoleSpaceWars {
 
             bigEnemyStopwatch.Start();
             flatEnemyStopwatch.Start();
-            // roundEnemyStopwatch.Start();
-            // squareEnemyStopwatch.Start();
-            // tallEnemyStopwatch.Start();
+            roundEnemyStopwatch.Start();
+            squareEnemyStopwatch.Start();
+            tallEnemyStopwatch.Start();
         }
 
         public override void Update() {
@@ -155,15 +155,15 @@ namespace Academy.ConsoleSpaceWars {
             Enemy e;
 
             if (type == typeof(BigEnemy)) {
-                e = new BigEnemy(SPAWN_X, rnd.Next(3, 27));      //TODO: magic numbers
+                e = new BigEnemy(SPAWN_X, rnd.Next(0, Console.WindowHeight));
             } else if (type == typeof(FlatEnemy)) {
-                e = new FlatEnemy(SPAWN_X, rnd.Next(2, 28));
+                e = new FlatEnemy(SPAWN_X, rnd.Next(0, Console.WindowHeight));
             } else if (type == typeof(RoundEnemy)) {
-                e = new RoundEnemy(SPAWN_X, rnd.Next(3, 27));
+                e = new RoundEnemy(SPAWN_X, rnd.Next(0, Console.WindowHeight));
             } else if (type == typeof(SquareEnemy)) {
-                e = new SquareEnemy(SPAWN_X, rnd.Next(3, 27));
+                e = new SquareEnemy(SPAWN_X, rnd.Next(0, Console.WindowHeight));
             } else if (type == typeof(TallEnemy)) {
-                e = new TallEnemy(SPAWN_X, rnd.Next(5, 25));
+                e = new TallEnemy(SPAWN_X, rnd.Next(0, Console.WindowHeight));
             } else {
                 //something is not OK
                 return;
