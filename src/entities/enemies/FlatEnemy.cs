@@ -10,13 +10,11 @@ namespace Academy.ConsoleSpaceWars {
 
         private double fractionalX;
 
-        private int shootDelayInFrames = 0;
-        private int shootDelayTarget = 120;
-        private bool shooting = false;
-        private int shootDelayBetweenShots = 0;
-        private int shootDelayBetweenShotsTarget = 15;
         private int bulletsShot = 0;
         private int bulletsShotTarget = 3;
+
+        private FpsTimer fireTimer;
+        private FpsTimer tripleShotTimer;
 
         public FlatEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, INITIAL_SPEED, HEALTH, SCORE) {
             picture = new string[] {
@@ -30,6 +28,10 @@ namespace Academy.ConsoleSpaceWars {
             };
 
             fractionalX = X;
+
+            fireTimer = new FpsTimer(120, false, true);
+            fireTimer.OnCompleted += TripleShot;
+            fireTimer.Start();
         }
 
         public override void Update() {
@@ -40,41 +42,45 @@ namespace Academy.ConsoleSpaceWars {
 
             X = (int)Math.Max(fractionalX, 0);
 
-            TripleShotFps();
+            if (fireTimer != null) { fireTimer.Update(); }
+            if (tripleShotTimer != null) { tripleShotTimer.Update(); }
 
             base.Update();
         }
 
-        private void TripleShotFps() {
-            if (shooting) {
-                shootDelayBetweenShots++;
-
-                if (shootDelayBetweenShots >= shootDelayBetweenShotsTarget) {
-                    Fire(X, Y + 1, BulletType.LASER, DirectionType.LEFT);
-                    bulletsShot++;
-
-                    shootDelayBetweenShots = 0;
-
-                    if (bulletsShot == bulletsShotTarget) {
-                        bulletsShot = 0;
-                        shooting = false;
-                    }
-                }
-            } else {
-                shootDelayInFrames++;
-
-                if (shootDelayInFrames >= shootDelayTarget) {
-                    Fire(X, Y + 1, BulletType.LASER, DirectionType.LEFT);
-                    bulletsShot++;
-
-                    shootDelayInFrames = 0;
-                    shooting = true;
-                }
+        public override void Destroy() {
+            if (fireTimer != null) {
+                fireTimer.Stop();
+                fireTimer.OnCompleted -= TripleShot;
             }
+
+            if (tripleShotTimer != null) {
+                tripleShotTimer.Stop();
+                tripleShotTimer.OnCompleted -= FireShot;
+            }
+
+            base.Destroy();
         }
 
-        public override void Destroy() {
-            base.Destroy();
+        private void TripleShot() {
+            Fire(X, Y + 1, BulletType.LASER, DirectionType.LEFT);
+            bulletsShot++;
+
+            tripleShotTimer = new FpsTimer(15, false, true);
+            tripleShotTimer.OnCompleted += FireShot;
+            tripleShotTimer.Start();
+        }
+
+        private void FireShot() {
+            Fire(X, Y + 1, BulletType.LASER, DirectionType.LEFT);
+            bulletsShot++;
+
+            if (bulletsShot >= bulletsShotTarget) {
+                tripleShotTimer.Stop();
+                tripleShotTimer.OnCompleted -= FireShot;
+
+                bulletsShot = 0;
+            }
         }
     }
 }

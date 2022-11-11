@@ -10,8 +10,7 @@ namespace Academy.ConsoleSpaceWars {
 
         private double fractionalX;
 
-        private int shootDelayInFrames = 0;
-        private int shootDelayTarget = 60;
+        private FpsTimer fireTimer;
 
         public BigEnemy(int xCoord, int yCoord) : base(xCoord, yCoord, INITIAL_SPEED, HEALTH, SCORE) {
             picture = new string[] {
@@ -28,7 +27,9 @@ namespace Academy.ConsoleSpaceWars {
 
             fractionalX = X;
 
-            // shootStopwatch.Start();
+            fireTimer = new FpsTimer(60, false, true);
+            fireTimer.OnCompleted += FireShot;
+            fireTimer.Start();
         }
 
         public override void Update() {
@@ -39,13 +40,22 @@ namespace Academy.ConsoleSpaceWars {
 
             X = (int)Math.Max(fractionalX, 0);
 
-            shootDelayInFrames++;
-            if (shootDelayInFrames >= shootDelayTarget) {
-                Fire(X, Y + 1, BulletType.ARROW, DirectionType.LEFT);
-                shootDelayInFrames = 0;
-            }
+            if (fireTimer != null) { fireTimer.Update(); }
 
             base.Update();
+        }
+
+        public override void Destroy() {
+            if (fireTimer != null) {
+                fireTimer.Stop();
+                fireTimer.OnCompleted -= FireShot;
+            }
+
+            base.Destroy();
+        }
+
+        private void FireShot() {
+            Fire(X, Y + 1, BulletType.ARROW, DirectionType.LEFT);
         }
     }
 }
